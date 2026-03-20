@@ -35,7 +35,7 @@ export const createProduct = asyncHandler(async (req, res) => {
       message: `You already have a product named "${name.trim()}". Use a different name or edit the existing one.`,
     });
 
-const images = (req.files || []).map(f => ({ url: f.path, alt: f.originalname }));
+  const images = (req.files || []).map(f => ({ url: f.path, alt: f.originalname }));
 
   const product = await Product.create({
     name:        name.trim(),
@@ -96,7 +96,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   if (keepImages !== null)
     product.images = product.images.filter(img => keepImages.includes(img.url));
 
-const newImages = (req.files || []).map(f => ({ url: f.path, alt: f.originalname }));
+  const newImages = (req.files || []).map(f => ({ url: f.path, alt: f.originalname }));  // ✅ fixed variable name
   product.images = [...product.images, ...newImages].slice(0, 5);
 
   // Seller resubmit — reset to pending and clear stale rejection reason
@@ -163,14 +163,12 @@ export const getPendingProducts = asyncHandler(async (req, res) => {
 });
 
 // ── ADMIN: approve product ────────────────────────────────────────────────────
-// FIX: { rejectionReason: undefined } does NOT remove the field in MongoDB.
-// Must use $unset to properly clear it from the document.
 export const approveProduct = asyncHandler(async (req, res) => {
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {
       $set:   { status: "approved" },
-      $unset: { rejectionReason: "" },  // properly removes the field
+      $unset: { rejectionReason: "" },
     },
     { new: true }
   );
