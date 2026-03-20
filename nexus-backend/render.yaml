@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: nexus-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 10000
+
+      # ── MongoDB ───────────────────────────────────────────────────────────────
+      - key: MONGO_URI
+        sync: false   # Set in Render dashboard
+
+      # ── JWT ───────────────────────────────────────────────────────────────────
+      - key: JWT_SECRET
+        sync: false   # Paste the 128-char secret from your .env
+      - key: JWT_EXPIRE
+        value: 7d
+
+      # ── CORS / Frontend URL ───────────────────────────────────────────────────
+      - key: ALLOWED_ORIGIN
+        sync: false   # Your Vercel URL e.g. https://nexus-market.vercel.app
+      - key: FRONTEND_URL
+        sync: false   # Same as ALLOWED_ORIGIN — used in email links
+
+      # ── Gmail SMTP ────────────────────────────────────────────────────────────
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_SECURE
+        value: false
+      - key: SMTP_USER
+        sync: false  
+      - key: SMTP_PASS
+        sync: false   
+      - key: SMTP_FROM
+        sync: false   
+
+      # ── Twilio SMS ────────────────────────────────────────────────────────────
+      - key: TWILIO_ACCOUNT_SID
+        sync: false   
+      - key: TWILIO_AUTH_TOKEN
+        sync: false   
+      - key: TWILIO_PHONE_NUMBER
+        value: "+13186683978"
+
+      # ── File uploads ──────────────────────────────────────────────────────────
+      - key: MAX_FILE_SIZE_MB
+        value: 5
